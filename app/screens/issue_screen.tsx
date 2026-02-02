@@ -14,7 +14,7 @@ import { Dropdown } from "react-native-element-dropdown";
 
 const filterItems = [
   {
-    'label': 'All',
+    'label': 'အားလုံး',
     'value': null
   },
   {
@@ -68,7 +68,7 @@ export default function IssuesScreen() {
     maxHeight={300}
     labelField="label"
     valueField="value"
-    placeholder='All'
+    placeholder='အားလုံး'
     value={currentStatus}
     onChange={item => filterByStatus(item.value)}
   />);
