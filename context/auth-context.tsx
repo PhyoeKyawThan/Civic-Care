@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             } catch (e) {
                 console.warn("Auth restore failed, logging out");
-                // await logout(); // clean exit
+                await logout(); // clean exit
             } finally {
                 setLoading(false);
             }

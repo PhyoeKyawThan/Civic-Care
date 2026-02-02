@@ -26,6 +26,7 @@ const MAPPING = {
   'info.bubble.fill': 'info-outline',
   'hand.thumbsup.fill': 'thumb-up',
   'hand.thumbsdown.fill': 'thumb-down',
+
 } as IconMapping;
 
 /**

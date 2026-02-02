@@ -1,19 +1,50 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Colors } from "@/constants/theme";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-interface HederProps{
+interface HederProps {
     headerTitle?: string
 }
 
-export function Header({headerTitle}:HederProps) {
+export function Header({ headerTitle }: HederProps) {
+    const router = useRouter();
     return (
-        <View style={[styles.header]}>
-            <Text style={styles.appName}>
-                <Text style={styles.appNameBold}>ပြည်သူအကျိုးပြု</Text>
-                {/* <Text style={[styles.darkAppNameLight]}>Care</Text> */}
-            </Text>
-            <Text style={[styles.darkText]}>
-                {headerTitle ?? 'Community Dashboard'}
-            </Text>
+        <View style={{
+            flexDirection: 'row',
+            backgroundColor: '#7cdb84',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+        }}>
+            <View style={[styles.header]}>
+                <Text style={styles.appName}>
+                    <Text style={styles.appNameBold}>ပြည်သူအကျိုးပြု</Text>
+                    {/* <Text style={[styles.darkAppNameLight]}>Care</Text> */}
+                </Text>
+                <Text style={[styles.darkText]}>
+                    {headerTitle ?? 'Community Dashboard'}
+                </Text>
+            </View>
+            <View style={{
+                margin: 10,
+            }}>
+                <TouchableOpacity style={{
+                    flexDirection: 'row',
+                    gap: 2,
+                    alignItems: 'center',
+                    paddingEnd: 10,
+                    paddingStart: 10,
+                    paddingTop: 5,
+                    paddingBottom: 5,
+                    backgroundColor: Colors.light.background,
+                    borderRadius: 20
+                }} onPress={()=>router.push('/screens/search_screen')}>
+                    <MaterialIcons name="search" size={29} color={Colors.light.inActiveIcon}/>
+                    <Text style={{
+                        color: Colors.light.inActiveIcon
+                    }}>ရှာရန်</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }

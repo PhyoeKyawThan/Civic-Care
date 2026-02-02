@@ -1,5 +1,5 @@
 import { getToken } from "@/utils/test-token-storage";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useServicesEntries } from "./services_endpoints";
 
 export type IssueStatus = 'open' | 'in_progress' | 'closed';
@@ -68,60 +68,72 @@ type PaginatedResponse<T> = {
 };
 
 
-export function useIssue(page: number = 1) {
+export function useIssue(initialPage: number = 1) {
+    const [page, setPage] = useState<number>(initialPage);
+    const [status, setStatus] = useState<string | null>(null);
     const [data, setData] = useState<PaginatedResponse<Issue> | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const { getIssuesEntry } = useServicesEntries();
-    useEffect(() => {
-        let isMounted = true;
 
-        const fetchIssues = async () => {
-            setLoading(true);
-            setError(null);
+    const fetchIssues = useCallback(async (statusFilter?: string | null) => {
+        setLoading(true);
+        setError(null);
 
-            try {
-                const access = await getToken();
-                const res = await fetch(`${getIssuesEntry}?page=${page}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${access}`
-                    }
-                });
-                if (!res.ok) throw new Error("Failed to fetch issues");
+        try {
+            const access = await getToken();
 
-                const json: PaginatedResponse<Issue> = await res.json();
+            const params = new URLSearchParams();
+            params.append('page', page.toString());
 
-                if (isMounted) {
-                    setData(json);
-                }
-            } catch (err) {
-                if (isMounted) {
-                    setError((err as Error).message);
-                }
-            } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+            const statusToUse = statusFilter !== undefined ? statusFilter : status;
+            if (statusToUse) {
+                params.append('status', statusToUse);
             }
-        };
 
+            const url = `${getIssuesEntry}?${params.toString()}`;
+            const res = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${access}`
+                }
+            });
+
+            if (!res.ok) throw new Error(`Failed to fetch issues: ${res.status}`);
+
+            const json: PaginatedResponse<Issue> = await res.json();
+            setData(json);
+        } catch (err) {
+            setError((err as Error).message);
+        } finally {
+            setLoading(false);
+        }
+    }, [page, status, getIssuesEntry]);
+
+    useEffect(() => {
         fetchIssues();
+    }, [page, status, fetchIssues]);
 
-        return () => {
-            isMounted = false;
-        };
-    }, [page, getIssuesEntry]);
+    const filterByStatus = useCallback(async (newStatus: string | null) => {
+        setStatus(newStatus);
+        await fetchIssues(newStatus);
+        setPage(1);
+    }, [fetchIssues]);
 
     return {
         issues: data?.results ?? [],
         count: data?.count ?? 0,
+        currentPage: page,
+        setPage,
+        currentStatus: status,
+        filterByStatus,
+        loading,
+        error,
+        refetch: fetchIssues,
         next: data?.next,
         previous: data?.previous,
         hasNext: Boolean(data?.next),
         hasPrevious: Boolean(data?.previous),
-        loading,
-        error,
     };
 
 }

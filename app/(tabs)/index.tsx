@@ -18,17 +18,14 @@ function Home() {
       <Header/>
       <TopTap.Navigator screenOptions={{
         tabBarScrollEnabled: true,
-        // tabBarActiveTintColor: 'white',
         tabBarIndicatorStyle: {
           backgroundColor: '#231d1d'
         },
-        // tabBarInactiveTintColor: 'Colors.light.text',
         tabBarLabelStyle: {
           fontWeight: '700',
           borderBottomColor: "white"
         },
         tabBarStyle: {
-          // backgroundColor: '#90D5ff',
           backgroundColor: Colors.light.tabBarBackgroundColor,
           elevation: 0,
           marginTop: 0,
@@ -40,7 +37,7 @@ function Home() {
         }
       }}>
         <TopTap.Screen name="Issues" options={{
-          title: "ဒေသဖွင့်ဖြိုးရေး"
+          title: "ဒေသဖွင့်ဖြိုးရေး",
         }} component={IssuesScreen} />
         <TopTap.Screen options={{
           title: "မဆောင်ရွက်ခင်"
