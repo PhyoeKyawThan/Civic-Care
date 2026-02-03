@@ -1,5 +1,5 @@
 import { getToken } from "@/utils/test-token-storage";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useServicesEntries } from "./services_endpoints";
 
 export type IssueStatus = 'open' | 'in_progress' | 'closed';
@@ -71,12 +71,13 @@ type PaginatedResponse<T> = {
 export function useIssue(initialPage: number = 1) {
     const [page, setPage] = useState<number>(initialPage);
     const [status, setStatus] = useState<string | null>(null);
+    const [search, setSearch] = useState<string | null>(null);
     const [data, setData] = useState<PaginatedResponse<Issue> | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const { getIssuesEntry } = useServicesEntries();
 
-    const fetchIssues = useCallback(async (statusFilter?: string | null) => {
+    const fetchIssues = useCallback(async (statusFilter?: string | null, searchText?: string | null) => {
         setLoading(true);
         setError(null);
 
@@ -87,8 +88,14 @@ export function useIssue(initialPage: number = 1) {
             params.append('page', page.toString());
 
             const statusToUse = statusFilter !== undefined ? statusFilter : status;
+            // fetch issues data from status 
+            const searchToUse = searchText !== undefined ? searchText : search;
             if (statusToUse) {
                 params.append('status', statusToUse);
+            }
+
+            if (searchToUse) {
+                params.append('search_title', searchToUse);
             }
 
             const url = `${getIssuesEntry}?${params.toString()}`;
@@ -110,13 +117,15 @@ export function useIssue(initialPage: number = 1) {
         }
     }, [page, status, getIssuesEntry]);
 
-    useEffect(() => {
-        fetchIssues();
-    }, [page, status, fetchIssues]);
-
     const filterByStatus = useCallback(async (newStatus: string | null) => {
         setStatus(newStatus);
         await fetchIssues(newStatus);
+        setPage(1);
+    }, [fetchIssues]);
+
+    const filterBySearch = useCallback(async (newSearch: string | null) => {
+        setSearch(newSearch);
+        await fetchIssues(null, newSearch);
         setPage(1);
     }, [fetchIssues]);
 
@@ -127,7 +136,9 @@ export function useIssue(initialPage: number = 1) {
         setPage,
         currentStatus: status,
         filterByStatus,
+        filterBySearch,
         loading,
+        fetchIssues,
         error,
         refetch: fetchIssues,
         next: data?.next,

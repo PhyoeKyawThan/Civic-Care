@@ -15,7 +15,7 @@ type SearchResult = {
 
 export const useSearch = () => {
     const [result, setResult] = useState<SearchResult[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [searchLoading, setsearchLoading] = useState<boolean>(false);
     const { getIssuesEntry } = useServicesEntries();
     const [search, setSearch] = useState<string>("");
     const [isFound, setIsFound] = useState<boolean>(false);
@@ -38,7 +38,7 @@ export const useSearch = () => {
         const controller = new AbortController();
         abortControllerRef.current = controller;
 
-        setLoading(true);
+        setsearchLoading(true);
         try {
             const response = await fetch(`${getIssuesEntry}?search=${encodeURIComponent(searchText)}`, {
                 signal: controller.signal, 
@@ -60,7 +60,7 @@ export const useSearch = () => {
                 console.error(error);
             }
         } finally {
-            setLoading(false);
+            setsearchLoading(false);
         }
     }, [getIssuesEntry]);
 
@@ -68,5 +68,5 @@ export const useSearch = () => {
         doSearch('');
     }, [])
 
-    return { result, loading, doSearch, isFound };
+    return { result, searchLoading, doSearch, isFound };
 }

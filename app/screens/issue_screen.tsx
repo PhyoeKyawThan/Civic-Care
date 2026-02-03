@@ -11,6 +11,7 @@ import IssuePost from "@/components/issue-post";
 import { Colors } from "@/constants/theme";
 import { useIssue } from "@/services/issues";
 import { mapIssueToUI } from "@/utils/issueAdapter";
+import { useEffect } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 
 const filterItems = [
@@ -37,6 +38,7 @@ const { width, height } = Dimensions.get('screen');
 
 export default function IssuesScreen() {
   const {
+    fetchIssues,
     issues,
     count,
     loading,
@@ -49,6 +51,9 @@ export default function IssuesScreen() {
     hasPrevious
   } = useIssue();
 
+  useEffect(() => {
+    fetchIssues();
+  }, [currentPage, currentStatus, fetchIssues]);
   const DropDownList = () => (<Dropdown
     style={{
       width: width - 20,

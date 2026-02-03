@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/theme";
+import { useThrottledCallback } from "@/hooks/use-throttle";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -9,6 +10,9 @@ interface HederProps {
 
 export function Header({ headerTitle }: HederProps) {
     const router = useRouter();
+    const handlePress = useThrottledCallback(() => {
+        router.push('/screens/search_screen');
+    });
     return (
         <View style={{
             flexDirection: 'row',
@@ -38,8 +42,8 @@ export function Header({ headerTitle }: HederProps) {
                     paddingBottom: 5,
                     backgroundColor: Colors.light.background,
                     borderRadius: 20
-                }} onPress={()=>router.push('/screens/search_screen')}>
-                    <MaterialIcons name="search" size={29} color={Colors.light.inActiveIcon}/>
+                }} onPress={handlePress}>
+                    <MaterialIcons name="search" size={29} color={Colors.light.inActiveIcon} />
                     <Text style={{
                         color: Colors.light.inActiveIcon
                     }}>ရှာဖွေရန်</Text>

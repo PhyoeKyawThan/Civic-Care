@@ -1,17 +1,24 @@
+import IssuePost from "@/components/issue-post";
 import { Colors } from "@/constants/theme";
+import { useIssue } from "@/services/issues";
 import { useSearch } from "@/services/search";
+import { mapIssueToUI } from "@/utils/issueAdapter";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import debounce from 'lodash.debounce';
 import { useCallback, useState } from "react";
-import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Dimensions, FlatList, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get('screen');
 
-const SuggestionItem = ({ suggestion_text }: { suggestion_text: string }) => {
+const SuggestionItem = ({ suggestion_text, filterBySearch }:
+    {
+        suggestion_text: string,
+        filterBySearch: () => void,
+    }) => {
     return (
-        <TouchableOpacity onPress={() => { }} style={styles.suggestionItem}>
+        <TouchableOpacity onPress={filterBySearch} style={styles.suggestionItem}>
             <Text>{suggestion_text}</Text>
         </TouchableOpacity>
     )
@@ -21,7 +28,23 @@ export default function SearchScreen() {
     const color = Colors.light;
     const router = useRouter();
     const [searchText, setSearchText] = useState<string>('');
-    const { doSearch, loading, isFound, result } = useSearch();
+    const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
+    const { doSearch, result } = useSearch();
+    const {
+        issues,
+        count,
+        loading,
+        error,
+        filterBySearch,
+        currentPage,
+        setPage,
+        hasNext,
+    } = useIssue();
+    const loadNextPage = () => {
+        if (!loading && hasNext) {
+            setPage(currentPage + 1);
+        }
+    };
     const debouncedSearch = useCallback(
         debounce((text) => {
             doSearch(text);
@@ -31,8 +54,19 @@ export default function SearchScreen() {
 
     const handleTextChange = (text: string) => {
         setSearchText(text);
+        setShowSuggestions(true);
         debouncedSearch(text);
     };
+
+    const handleSelectSuggestion = (title: string) => {
+        setSearchText(title);
+        filterBySearch(title);
+        setShowSuggestions(false);
+    };
+
+    const uiIssues = issues.map(mapIssueToUI);
+
+    const backgroundImage = require('@/assets/images/gad_logo.png');
     return (
         <SafeAreaView style={{
             flex: 1
@@ -79,23 +113,51 @@ export default function SearchScreen() {
             </View>
             {/* suggestion views */}
             <View style={styles.suggestionViewContainer}>
-                {result.map((res) => {
-                    return <SuggestionItem key={res.id} suggestion_text={res.title} />
-                })}
+                <ImageBackground source={backgroundImage} style={{
+                    flex: 1,
+                    width: '100%',
+                    height: '100%'
+                }}>
+                    {showSuggestions && result.length > 0 ? (
+                        result.map((res) => (
+                            <SuggestionItem
+                                key={res.id}
+                                suggestion_text={res.title}
+                                filterBySearch={() => handleSelectSuggestion(res.title)}
+                            />
+                        ))
+                    ) : (<FlatList
+                        data={uiIssues}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => <IssuePost issue={item} />}
+                        contentContainerStyle={styles.feed_container}
+                        onEndReached={loadNextPage}
+                        onEndReachedThreshold={0.6}
+                        ListFooterComponent={
+                            loading ? <ActivityIndicator size="large" /> : null
+                        }
+                    />)}
+                </ImageBackground>
             </View>
             {/* searched contents views */}
         </SafeAreaView>
     );
 }
 
+
 const styles = StyleSheet.create({
     suggestionViewContainer: {
         flex: 1,
-        backgroundColor: Colors.light.background
+        backgroundColor: Colors.light.background,
     },
     suggestionItem: {
         padding: 20,
         color: 'black',
         fontWeight: 'bold'
     }
+    ,
+    feed_container: {
+        paddingBottom: 70,
+    },
+
 })
