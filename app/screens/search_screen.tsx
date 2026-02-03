@@ -4,6 +4,7 @@ import { useIssue } from "@/services/issues";
 import { useSearch } from "@/services/search";
 import { mapIssueToUI } from "@/utils/issueAdapter";
 import { MaterialIcons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { Stack, useRouter } from "expo-router";
 import debounce from 'lodash.debounce';
 import { useCallback, useState } from "react";
@@ -66,7 +67,7 @@ export default function SearchScreen() {
 
     const uiIssues = issues.map(mapIssueToUI);
 
-    const backgroundImage = require('@/assets/images/gad_logo.png');
+    const backgroundImage = require('@/assets/images/gad_background_watermark.png');
     return (
         <SafeAreaView style={{
             flex: 1
@@ -113,11 +114,12 @@ export default function SearchScreen() {
             </View>
             {/* suggestion views */}
             <View style={styles.suggestionViewContainer}>
-                <ImageBackground source={backgroundImage} style={{
-                    flex: 1,
-                    width: '100%',
-                    height: '100%'
-                }}>
+                <ImageBackground
+                    source={backgroundImage}
+                    style={styles.background}
+                >
+                    <BlurView intensity={100} tint="dark" style={StyleSheet.absoluteFill} />
+                    <View style={styles.overlay} />
                     {showSuggestions && result.length > 0 ? (
                         result.map((res) => (
                             <SuggestionItem
@@ -159,5 +161,13 @@ const styles = StyleSheet.create({
     feed_container: {
         paddingBottom: 70,
     },
-
+    background: {
+        flex: 1,
+        width: "100%",
+        height: "100%",
+    },
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: "rgba(255, 255, 255, 0.92)",
+    },
 })

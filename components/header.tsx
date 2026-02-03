@@ -2,7 +2,7 @@ import { Colors } from "@/constants/theme";
 import { useThrottledCallback } from "@/hooks/use-throttle";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface HederProps {
     headerTitle?: string
@@ -13,6 +13,7 @@ export function Header({ headerTitle }: HederProps) {
     const handlePress = useThrottledCallback(() => {
         router.push('/screens/search_screen');
     });
+    const gad_logo = require('@/assets/images/gad_logo.png');
     return (
         <View style={{
             flexDirection: 'row',
@@ -21,13 +22,19 @@ export function Header({ headerTitle }: HederProps) {
             alignItems: 'center'
         }}>
             <View style={[styles.header]}>
-                <Text style={styles.appName}>
-                    <Text style={styles.appNameBold}>ပြည်သူအကျိုးပြု</Text>
-                    {/* <Text style={[styles.darkAppNameLight]}>Care</Text> */}
-                </Text>
-                <Text style={[styles.darkText]}>
-                    {headerTitle ?? 'Community Dashboard'}
-                </Text>
+                <Image source={gad_logo} style={{
+                    width: 50,
+                    height: 50
+                }} />
+                <View>
+                    <Text style={styles.appName}>
+                        <Text style={styles.appNameBold}>ပြည်သူအကျိုးပြု</Text>
+                        {/* <Text style={[styles.darkAppNameLight]}>Care</Text> */}
+                    </Text>
+                    <Text style={[styles.darkText]}>
+                        {headerTitle ?? 'Community Dashboard'}
+                    </Text>
+                </View>
             </View>
             <View style={{
                 margin: 10,
@@ -55,6 +62,10 @@ export function Header({ headerTitle }: HederProps) {
 
 const styles = StyleSheet.create({
     header: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        gap: 10,
         paddingHorizontal: 20,
         paddingTop: 16,
         paddingBottom: 12,
@@ -67,7 +78,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#1E293B',
         borderBottomColor: '#334155',
     }, appName: {
-        fontSize: 28,
+        fontSize: 24,
         marginBottom: 4,
     },
     appNameBold: {
