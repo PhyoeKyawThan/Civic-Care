@@ -1,4 +1,3 @@
-// app/_layout.tsx or app/(tabs)/search.tsx
 import { Colors } from "@/constants/theme";
 import { useSearch } from "@/services/search";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -22,7 +21,7 @@ export default function SearchScreen() {
     const color = Colors.light;
     const router = useRouter();
     const [searchText, setSearchText] = useState<string>('');
-    const { doSearch, loading, result } = useSearch();
+    const { doSearch, loading, isFound, result } = useSearch();
     const debouncedSearch = useCallback(
         debounce((text) => {
             doSearch(text);

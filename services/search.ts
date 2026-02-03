@@ -18,7 +18,7 @@ export const useSearch = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const { getIssuesEntry } = useServicesEntries();
     const [search, setSearch] = useState<string>("");
-    
+    const [isFound, setIsFound] = useState<boolean>(false);
     
     const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -50,6 +50,11 @@ export const useSearch = () => {
             const data = await response.json();
         
             setResult(data.results || data); 
+            if(data.count > 0){
+                setIsFound(true);
+            }else{
+                setIsFound(false);
+            }
         } catch (error: any) {
             if (error.name !== 'AbortError') {
                 console.error(error);
@@ -63,5 +68,5 @@ export const useSearch = () => {
         doSearch('');
     }, [])
 
-    return { result, loading, doSearch };
+    return { result, loading, doSearch, isFound };
 }
