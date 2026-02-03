@@ -1,7 +1,7 @@
 // useVote.ts
 import { useAuth } from "@/hooks/use-auth";
 import { getToken } from "@/utils/test-token-storage";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IssueVote } from "./issues";
 import { useServicesEntries } from "./services_endpoints";
 
@@ -11,16 +11,18 @@ interface UseVoteProps {
 }
 
 export const useVote = ({ issue_id, initialVotes }: UseVoteProps) => {
-  const [vote, setVote] = useState<IssueVote>(
-    initialVotes || { up: 0, down: 0, score: 0, my_vote: 0 }
-  );
+  const [vote, setVote] = useState<IssueVote>(initialVotes || { up: 0, down: 0, score: 0, my_vote: 0 });
   const { refreshToken, logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const { getIssuesEntry } = useServicesEntries();
+  
+  useEffect(() => {
+    setVote(initialVotes || { up: 0, down: 0, score: 0, my_vote: 0 });
+  }, [initialVotes]);
 
   const sendVote = useCallback(
     async (value: number) => {
-      setIsLoading(true); 
+      setIsLoading(true);
 
       const doRequest = async () => {
         const access = await getToken();
@@ -61,5 +63,5 @@ export const useVote = ({ issue_id, initialVotes }: UseVoteProps) => {
     [issue_id, refreshToken, logout]
   );
 
-  return { vote, sendVote, isLoading };
+  return { vote, sendVote, isLoading, setVote };
 };

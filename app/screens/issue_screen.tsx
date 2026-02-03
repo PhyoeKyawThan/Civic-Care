@@ -11,7 +11,7 @@ import IssuePost from "@/components/issue-post";
 import { Colors } from "@/constants/theme";
 import { useIssue } from "@/services/issues";
 import { mapIssueToUI } from "@/utils/issueAdapter";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 
 const filterItems = [
@@ -40,6 +40,7 @@ export default function IssuesScreen() {
   const {
     fetchIssues,
     issues,
+    refetch,
     count,
     loading,
     error,
@@ -54,6 +55,9 @@ export default function IssuesScreen() {
   useEffect(() => {
     fetchIssues();
   }, [currentPage, currentStatus, fetchIssues]);
+  const handleOnRefresh = useCallback(() => {
+    fetchIssues();
+  }, [currentPage, currentPage]);
   const DropDownList = () => (<Dropdown
     style={{
       width: width - 20,
@@ -96,6 +100,7 @@ export default function IssuesScreen() {
       setPage(currentPage + 1);
     }
   };
+
   if (loading && issues.length === 0) {
     return (
       <View style={{ flex: 1 }}>
@@ -137,6 +142,8 @@ export default function IssuesScreen() {
         contentContainerStyle={styles.feed_container}
         onEndReached={loadNextPage}
         onEndReachedThreshold={0.6}
+        refreshing={false}
+        onRefresh={handleOnRefresh}
         ListFooterComponent={
           loading ? <ActivityIndicator size="large" /> : null
         }
