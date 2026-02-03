@@ -42,7 +42,7 @@ export function Header({ headerTitle }: HederProps) {
                     <MaterialIcons name="search" size={29} color={Colors.light.inActiveIcon}/>
                     <Text style={{
                         color: Colors.light.inActiveIcon
-                    }}>ရှာရန်</Text>
+                    }}>ရှာဖွေရန်</Text>
                 </TouchableOpacity>
             </View>
         </View>

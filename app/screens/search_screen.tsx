@@ -1,8 +1,10 @@
 // app/_layout.tsx or app/(tabs)/search.tsx
 import { Colors } from "@/constants/theme";
+import { useSearch } from "@/services/search";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
-import { useState } from "react";
+import debounce from 'lodash.debounce';
+import { useCallback, useState } from "react";
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -10,16 +12,28 @@ const { width, height } = Dimensions.get('screen');
 
 const SuggestionItem = ({ suggestion_text }: { suggestion_text: string }) => {
     return (
-        <TouchableOpacity onPress={()=>{}} style={styles.suggestionItem}>
+        <TouchableOpacity onPress={() => { }} style={styles.suggestionItem}>
             <Text>{suggestion_text}</Text>
         </TouchableOpacity>
     )
 }
 
-export default function Layout() {
+export default function SearchScreen() {
     const color = Colors.light;
     const router = useRouter();
     const [searchText, setSearchText] = useState<string>('');
+    const { doSearch, loading, result } = useSearch();
+    const debouncedSearch = useCallback(
+        debounce((text) => {
+            doSearch(text);
+        }, 500),
+        []
+    );
+
+    const handleTextChange = (text: string) => {
+        setSearchText(text);
+        debouncedSearch(text);
+    };
     return (
         <SafeAreaView style={{
             flex: 1
@@ -54,7 +68,7 @@ export default function Layout() {
                     }}
                     value={searchText}
                     autoFocus={true}
-                    onChangeText={(text) => setSearchText(text)}
+                    onChangeText={handleTextChange}
                 />
 
                 <MaterialIcons
@@ -66,8 +80,9 @@ export default function Layout() {
             </View>
             {/* suggestion views */}
             <View style={styles.suggestionViewContainer}>
-                <SuggestionItem suggestion_text="Environment issues" />
-                <SuggestionItem suggestion_text="SOmething searched" />
+                {result.map((res) => {
+                    return <SuggestionItem key={res.id} suggestion_text={res.title} />
+                })}
             </View>
             {/* searched contents views */}
         </SafeAreaView>

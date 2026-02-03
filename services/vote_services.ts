@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { getToken } from "@/utils/test-token-storage";
 import { useCallback, useState } from "react";
 import { IssueVote } from "./issues";
+import { useServicesEntries } from "./services_endpoints";
 
 interface UseVoteProps {
   issue_id: string;
@@ -15,6 +16,7 @@ export const useVote = ({ issue_id, initialVotes }: UseVoteProps) => {
   );
   const { refreshToken, logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const { getIssuesEntry } = useServicesEntries();
 
   const sendVote = useCallback(
     async (value: number) => {
@@ -23,7 +25,7 @@ export const useVote = ({ issue_id, initialVotes }: UseVoteProps) => {
       const doRequest = async () => {
         const access = await getToken();
         return fetch(
-          `http://192.168.100.53:8000/api/v1/issues/${issue_id}/vote/`,
+          `${getIssuesEntry}/${issue_id}/vote/`,
           {
             method: "POST",
             headers: {

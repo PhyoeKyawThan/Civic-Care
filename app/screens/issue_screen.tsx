@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Dimensions,
   FlatList,
   StyleSheet,
   Text,
@@ -14,7 +15,7 @@ import { Dropdown } from "react-native-element-dropdown";
 
 const filterItems = [
   {
-    'label': 'အားလုံး',
+    'label': 'လုပ်ဆောင်ချက်များ',
     'value': null
   },
   {
@@ -30,6 +31,8 @@ const filterItems = [
     'value': 'resolved'
   }
 ]
+
+const { width, height } = Dimensions.get('screen');
 
 
 export default function IssuesScreen() {
@@ -48,7 +51,7 @@ export default function IssuesScreen() {
 
   const DropDownList = () => (<Dropdown
     style={{
-      width: 200,
+      width: width - 20,
       marginTop: 10,
       marginStart: 10,
       borderRadius: 100,
@@ -68,7 +71,7 @@ export default function IssuesScreen() {
     maxHeight={300}
     labelField="label"
     valueField="value"
-    placeholder='အားလုံး'
+    placeholder='လုပ်ဆောင်ချက်များ'
     value={currentStatus}
     onChange={item => filterByStatus(item.value)}
   />);
