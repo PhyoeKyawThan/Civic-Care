@@ -57,7 +57,7 @@ export default function IssuesScreen() {
   }, [currentPage, currentStatus, fetchIssues]);
   const handleOnRefresh = useCallback(() => {
     fetchIssues();
-  }, [currentPage, currentPage]);
+  }, [currentPage, currentPage, fetchIssues]);
   const DropDownList = () => (<Dropdown
     style={{
       width: width - 20,
