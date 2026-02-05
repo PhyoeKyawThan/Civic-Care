@@ -20,6 +20,7 @@ export const Colors = {
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
     tabBarBackgroundColor: '#aaeaaf',
+    secondaryBackgroundColor: '#e7f6e8',
     shadow: '#93e28e',
   },
   dark: {
