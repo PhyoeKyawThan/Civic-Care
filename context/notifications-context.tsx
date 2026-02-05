@@ -1,7 +1,8 @@
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
+import { getToken } from "@/utils/test-token-storage";
 import * as Notifications from "expo-notifications";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
+// import { io, Socket } from "socket.io-client";
 
 interface NotificationContextType {
   expoPushToken: string | null;
@@ -27,7 +28,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [error, setError] = useState<any>(null);
   const [socketCount, setSocketCount] = useState(0);
 
-  const socketRef = useRef<Socket | null>(null);
+  const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     // Try Push Registration (FCM)
@@ -39,40 +40,55 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       }
     );
 
-    // Initialize Socket.io (The Fallback/Live Channel)
-    socketRef.current = io("http://192.168.100.53:8000", {
-      transports: ["websocket"],
-      autoConnect: true,
-    });
+    const connectWebSocket = async () => {
+      const accessToken = await getToken();
+      const wsUrl = `ws://192.168.100.98:8000/ws/notifications/?token=${accessToken}`;
+      socketRef.current = new WebSocket(wsUrl);
 
-    socketRef.current.on("notification_update", async (data) => {
-      setSocketCount(data.count);
+      socketRef.current.onopen = () => console.log("WS Connected ✅");
 
-      await Notifications.setBadgeCountAsync(data.count);
-      if (data.count > 0) {
+      socketRef.current.onmessage = async (e) => {
+        const data = JSON.parse(e.data);
+        if (data.count !== undefined) {
+          setSocketCount(data.count);
+          await Notifications.setBadgeCountAsync(data.count);
+        }
+
         await Notifications.scheduleNotificationAsync({
           content: {
             title: "New Update",
-            body: `You have ${data.count} new notifications.`,
-            badge: data.count,
+            body: data.notification || `You have new updates.`,
+            sound: true,
+            priority: 'high',
           },
-          trigger: null, // trigger immediately
+          trigger: null,
         });
-      }
-    });
+      };
 
-    // Listen for incoming notifications (from any source)
+      socketRef.current.onerror = (e) => console.error("WS Error:", e);
+
+      socketRef.current.onclose = (e) => {
+        console.log("WS Closed. Reconnecting in 3s...", e.reason);
+        setTimeout(connectWebSocket, 3000);
+      };
+    };
+
+    connectWebSocket();
+
     const nListener = Notifications.addNotificationReceivedListener(setNotification);
 
     return () => {
-      socketRef.current?.disconnect();
+      socketRef.current?.close();
       nListener.remove();
     };
   }, []);
   const clearNotification = async (notification_id?: string) => {
     await Notifications.dismissAllNotificationsAsync();
-    if (socketRef.current?.connected) {
-      socketRef.current.emit("mark_notifications_as_read", { userId: "current-user-id", notification_id: "123" });
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify({
+        "action": "mark_as_read",
+        "notification_id": notification_id || "all"
+      }));
     }
   };
   return (

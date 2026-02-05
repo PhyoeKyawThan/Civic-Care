@@ -11,6 +11,7 @@ export async function registerForPushNotificationsAsync() {
       lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#FF231F7C",
+      sound: "default"
     });
   }
 

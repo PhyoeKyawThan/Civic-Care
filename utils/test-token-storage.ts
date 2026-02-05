@@ -30,7 +30,8 @@ export const getRefreshToken = async (): Promise<string | null> => {
 
 export const getToken = async (): Promise<string | null> => {
   try {
-    return await AsyncStorage.getItem(AUTH_TOKEN_KEY);
+    const token = await AsyncStorage.getItem(AUTH_TOKEN_KEY);
+    return token;
   } catch (e) {
     console.error("Failed to get token", e);
     return null;

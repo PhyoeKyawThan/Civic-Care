@@ -1,4 +1,4 @@
-import { NotificationType } from "@/constants/notification";
+import { NotificationType } from "@/types/notification";
 export const notificationSamples: NotificationType[] = [
   {
     id: "1",

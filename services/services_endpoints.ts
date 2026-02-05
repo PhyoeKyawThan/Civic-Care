@@ -1,9 +1,12 @@
 export const useServicesEntries = () => {
     // const apiEntry = "http://192.168.60.39:8000/api/v1";
     // const apiEntry = "http://192.168.100.53:8000/api/v1";
-    const apiEntry = "http://192.168.70.14:8000/api/v1";
+    const apiEntry = "http://192.168.100.98:8000/api/v1";
+    const notificationWS = "ws://192.168.100.98:8000/ws/notifications/"
     // const apiEntry = "https://civiccaremanagementsystem.onrender.com/api/v1"
     return {
+        "notificationWS": notificationWS,
+        "notifications": `${apiEntry}/notifications`,
         'searchIssue':  `${apiEntry}/issues`,
         'getCurrentUserProfile': `${apiEntry}/user/me/`,
         'getIssueType': `${apiEntry}/issue_types`,

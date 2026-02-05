@@ -1,4 +1,4 @@
-import { NotificationType } from "@/constants/notification";
+import { NotificationType } from "@/types/notification";
 import { router } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
