@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/use-auth";
 import { useServicesEntries } from "@/services/services_endpoints";
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
 import { getToken } from "@/utils/test-token-storage";
@@ -29,6 +30,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [error, setError] = useState<any>(null);
   const [socketCount, setSocketCount] = useState(0);
   const { notificationWS } = useServicesEntries();
+  const { user } = useAuth();
 
   const socketRef = useRef<WebSocket | null>(null);
 
@@ -71,11 +73,13 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
       socketRef.current.onclose = (e) => {
         console.log("WS Closed. Reconnecting in 3s...", e.reason);
-        setTimeout(connectWebSocket, 3000);
+        setTimeout(connectWebSocket, 10000);
       };
     };
 
-    connectWebSocket();
+    if (!!user) {
+      connectWebSocket();
+    }
 
     const nListener = Notifications.addNotificationReceivedListener(setNotification);
 
