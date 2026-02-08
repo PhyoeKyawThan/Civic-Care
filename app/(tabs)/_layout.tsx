@@ -66,16 +66,40 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="issues_report"
+        name="profile"
         options={{
-          title: 'Report',
+          title: 'Profile',
+          headerShown: true,
+          headerTitleAlign: 'center',
           tabBarIcon: ({ color, focused }) => (
             <View style={focused ? styles.activeIconContainer : null}>
               <IconSymbol
                 size={focused ? 26 : 24}
-                name="exclamationmark.triangle.fill"
+                name="person.fill"
                 color={color}
               />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="issues_report"
+        options={{
+          title: 'Report',
+          tabBarIcon: ({ color, focused }) => (
+            <View style={[styles.centralIconContainer, focused ? {
+              backgroundColor: 'white'
+            } : '']}>
+              <View style={[
+                styles.centralIconBackground,
+                { backgroundColor: '#caeec6' }
+              ]}>
+                <IconSymbol
+                  size={28}
+                  name="exclamationmark.triangle.fill"
+                  color={color}
+                />
+              </View>
             </View>
           ),
         }}
@@ -99,22 +123,21 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="profile"
+        name="settings"
         options={{
-          title: 'Profile',
-          headerShown: true,
-          headerTitleAlign: 'center',
+          title: 'Settings',
           tabBarIcon: ({ color, focused }) => (
             <View style={focused ? styles.activeIconContainer : null}>
               <IconSymbol
                 size={focused ? 26 : 24}
-                name="person.fill"
+                name="gearshape.fill"
                 color={color}
               />
             </View>
           ),
         }}
       />
+
     </Tabs>
   );
 }

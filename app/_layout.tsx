@@ -1,5 +1,4 @@
 import { AuthProvider } from "@/context/auth-context";
-import { NotificationProvider } from "@/context/notifications-context";
 import * as Notifications from 'expo-notifications';
 import { SplashScreen } from "expo-router";
 import * as TaskManager from 'expo-task-manager';
@@ -34,9 +33,9 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <NotificationProvider>
+      {/* <NotificationProvider> */}
         <AppLayout />
-      </NotificationProvider>
+      {/* </NotificationProvider> */}
     </AuthProvider>
   );
 }

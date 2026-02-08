@@ -1,3 +1,4 @@
+import { useServicesEntries } from "@/services/services_endpoints";
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
 import { getToken } from "@/utils/test-token-storage";
 import * as Notifications from "expo-notifications";
@@ -27,6 +28,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [notification, setNotification] = useState<Notifications.Notification | null>(null);
   const [error, setError] = useState<any>(null);
   const [socketCount, setSocketCount] = useState(0);
+  const { notificationWS } = useServicesEntries();
 
   const socketRef = useRef<WebSocket | null>(null);
 
@@ -42,7 +44,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     const connectWebSocket = async () => {
       const accessToken = await getToken();
-      const wsUrl = `ws://192.168.100.98:8000/ws/notifications/?token=${accessToken}`;
+      const wsUrl = `${notificationWS}?token=${accessToken}`;
       socketRef.current = new WebSocket(wsUrl);
 
       socketRef.current.onopen = () => console.log("WS Connected ✅");

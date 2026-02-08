@@ -1,22 +1,35 @@
 import { Header } from "@/components/header";
-import { Colors } from "@/constants/theme";
+import HomeCardNavigator from "@/components/home-card-navigator";
+import TextButton from "@/components/text-button";
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import IssuesScreen from "../screens/issue_screen";
-import OnSolvingIssueScreen from "../screens/onsolvingissues_screen";
-import SolvedScreen from "../screens/solved_screen";
 
 const TopTap = createMaterialTopTabNavigator();
-
+const width = Dimensions.get('screen').width;
 function Home() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   return (
     <SafeAreaView style={styles.container}>
       <Header/>
-      <TopTap.Navigator screenOptions={{
+      <HomeCardNavigator/>
+      <TextButton title="တိုင်ကြားရန်" onPress={()=>{}} style={{
+        container: {
+          width: width - 20,
+          backgroundColor: '#de9f1f',
+          padding: 10,
+          borderRadius: 20,
+          alignItems: 'center'
+        },
+        text: {
+          color: '#ffff',
+          fontSize: 20,
+        }
+      }}/>
+      
+      {/* <TopTap.Navigator screenOptions={{
         tabBarScrollEnabled: true,
         tabBarIndicatorStyle: {
           backgroundColor: '#231d1d'
@@ -49,7 +62,7 @@ function Home() {
         <TopTap.Screen options={{
           title: "ဆောင်ရွက်ပြီး"
         }} name="solved" component={OnSolvingIssueScreen} />
-      </TopTap.Navigator>
+      </TopTap.Navigator> */}
     </SafeAreaView>
   );
 }
@@ -57,6 +70,7 @@ function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center'
     // backgroundColor: '#F8FAFC',
   },
   

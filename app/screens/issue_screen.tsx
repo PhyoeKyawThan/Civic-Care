@@ -11,6 +11,7 @@ import IssuePost from "@/components/issue-post";
 import { Colors } from "@/constants/theme";
 import { useIssue } from "@/services/issues";
 import { mapIssueToUI } from "@/utils/issueAdapter";
+import { useNavigation } from "expo-router";
 import { useCallback, useEffect } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 
@@ -37,6 +38,13 @@ const { width, height } = Dimensions.get('screen');
 
 
 export default function IssuesScreen() {
+  const navigation = useNavigation();
+  useEffect(()=>{
+    navigation.setOptions({
+      title: "ပတ်ဝန်းကျင်ဖွံ့ဖြိုးတိုးတက်ရေး",
+      center: true
+    })
+  })
   const {
     fetchIssues,
     issues,
