@@ -77,7 +77,7 @@ export function useIssue(initialPage: number = 1) {
     const [error, setError] = useState<string | null>(null);
     const { getIssuesEntry } = useServicesEntries();
 
-    const fetchIssues = useCallback(async (statusFilter?: string | null, searchText?: string | null) => {
+    const fetchIssues = useCallback(async (statusFilter?: string | null, searchText?: string | null, recentIssues?: boolean | null) => {
         setLoading(true);
         setError(null);
 
@@ -96,6 +96,10 @@ export function useIssue(initialPage: number = 1) {
 
             if (searchToUse) {
                 params.append('search_title', searchToUse);
+            }
+
+            if(recentIssues){
+                params.append('recent_issues', 'true');
             }
 
             const url = `${getIssuesEntry}?${params.toString()}`;
@@ -123,6 +127,11 @@ export function useIssue(initialPage: number = 1) {
         setPage(1);
     }, [fetchIssues]);
 
+    const recentActivity = useCallback(async () => {
+        await fetchIssues(null, null, true);
+        setPage(1);
+    }, [fetchIssues])
+
     const filterBySearch = useCallback(async (newSearch: string | null) => {
         setSearch(newSearch);
         await fetchIssues(null, newSearch);
@@ -139,6 +148,7 @@ export function useIssue(initialPage: number = 1) {
         filterBySearch,
         loading,
         fetchIssues,
+        recentActivity,
         error,
         refetch: fetchIssues,
         next: data?.next,

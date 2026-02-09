@@ -1,4 +1,3 @@
-import { Colors } from "@/constants/theme";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import {
@@ -156,12 +155,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: itemMargin,
         paddingTop: itemMargin,
         justifyContent: 'space-between',
+        backgroundColor: "#ebfceb",
+        paddingBottom: 20,
+        marginBottom: 10,
+        borderBottomEndRadius: 50,
+        borderBottomStartRadius: 50,
     },
     cardContainer: {
         marginBottom: itemMargin,
     },
     card: {
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#96d99c",
         borderRadius: 24,
         alignItems: 'center',
         justifyContent: 'center',
@@ -191,7 +195,8 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: '700',
-        color: Colors.light.inActiveIcon,
+        // color: "white",
+        color: 'black',
         fontSize: 14,
         paddingBottom: 8,
         textAlign: 'center',

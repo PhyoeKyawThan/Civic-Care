@@ -72,14 +72,12 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       socketRef.current.onerror = (e) => console.error("WS Error:", e);
 
       socketRef.current.onclose = (e) => {
-        console.log("WS Closed. Reconnecting in 3s...", e.reason);
+        console.log("WS Closed. Reconnecting in 10s...", e.reason);
         setTimeout(connectWebSocket, 10000);
       };
     };
 
-    if (!!user) {
-      connectWebSocket();
-    }
+    connectWebSocket();
 
     const nListener = Notifications.addNotificationReceivedListener(setNotification);
 
