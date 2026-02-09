@@ -9,12 +9,13 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.expo.civiccare"
     },
     "android": {
       "permissions": [
         "FOREGROUND_SERVICE",
-        "FOREGROUND_SERVICE_DATA_SYNC", 
+        "FOREGROUND_SERVICE_DATA_SYNC",
         "POST_NOTIFICATIONS",
         "INTERNET"
       ],

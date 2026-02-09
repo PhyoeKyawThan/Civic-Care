@@ -3,6 +3,7 @@ import { NotificationProvider } from "@/context/notifications-context";
 import * as Notifications from 'expo-notifications';
 import { SplashScreen } from "expo-router";
 import * as TaskManager from 'expo-task-manager';
+import { useEffect } from "react";
 import AppLayout from "./app_layout";
 
 Notifications.setNotificationHandler({
@@ -32,6 +33,9 @@ Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  useEffect(()=>{
+    SplashScreen.hideAsync();
+  }, [])
   return (
     <AuthProvider>
       <NotificationProvider>
